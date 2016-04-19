@@ -3,4 +3,5 @@
 * Devin Foulger
 * David Winkler
 * Harrison Kaiser
+* Terrance Lee
 
