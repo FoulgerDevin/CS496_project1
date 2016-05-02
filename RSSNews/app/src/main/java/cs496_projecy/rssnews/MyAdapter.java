@@ -36,8 +36,8 @@ public class MyAdapter extends ArrayAdapter<String> {
         ImageView image = (ImageView)convertView.findViewById(R.id.image);
 
         // Now add our data into the view
-        title.setText("This is title #" + count);
-        summary.setText(item);
+        title.setText(item);
+        summary.setText("Description");
         image.setImageResource(R.mipmap.ic_launcher);
 
         // Finish
