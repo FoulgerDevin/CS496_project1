@@ -39,6 +39,7 @@ public class MyAdapter extends ArrayAdapter<String> {
         title.setText("This is title #" + count);
         summary.setText(item);
         image.setImageResource(R.mipmap.ic_launcher);
+        count++;
 
         // Finish
         return convertView;
