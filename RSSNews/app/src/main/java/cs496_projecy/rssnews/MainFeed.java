@@ -1,6 +1,8 @@
 package cs496_projecy.rssnews;
 
+import android.media.browse.MediaBrowser;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,13 +11,24 @@ import android.widget.ListView;
 import com.einmalfel.earl.EarlParser;
 import com.einmalfel.earl.Feed;
 import com.einmalfel.earl.Item;
+import com.einmalfel.earl.ItunesItem;
+import com.einmalfel.earl.MediaItem;
+import com.einmalfel.earl.RSSCategory;
+import com.einmalfel.earl.RSSEnclosure;
+import com.einmalfel.earl.RSSGuid;
+import com.einmalfel.earl.RSSItem;
 
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 public class MainFeed extends AppCompatActivity {
-    ArrayList<String> myStrArr;
+    ArrayList<RSSItem> myStrArr;
     ListView mList;
     MyAdapter mAdapter;
     String link = ("http://rss.nytimes.com/services/xml/rss/nyt/World.xml");
@@ -27,7 +40,7 @@ public class MainFeed extends AppCompatActivity {
 
         mList = (ListView)findViewById(R.id.mainList);
 
-        myStrArr = new ArrayList<String>();
+        myStrArr = new ArrayList<RSSItem>();
 
         // test
 
@@ -43,12 +56,12 @@ public class MainFeed extends AppCompatActivity {
 
     }
 
-    class RetrieveFeedTask extends AsyncTask<Void, Void, ArrayList<String>> {
+    class RetrieveFeedTask extends AsyncTask<Void, Void, ArrayList<RSSItem>> {
 
         String RSS;
 
         @Override
-        protected ArrayList<String> doInBackground(Void... params) {
+        protected ArrayList<RSSItem> doInBackground(Void... params) {
 
             InputStream inputStream = null;
 
@@ -59,7 +72,17 @@ public class MainFeed extends AppCompatActivity {
                 Log.i(RSS, "Processing feed: " + feed.getTitle());
                 for (Item item : feed.getItems()) {
                     String title = item.getTitle();
-                    myStrArr.add(title);
+                    String description = item.getDescription();
+                    String author = item.getAuthor();
+                    Date pubDate = item.getPublicationDate();
+                    //List<RSSCategory> category = new List<RSSCategory>();
+
+                    //List<RSSEnclosure> enclosure = new List<RSSEnclosure>();
+
+                    RSSItem rssContent = new RSSItem(title, null, description, author, null,
+                            null, null, null, pubDate, null, null, null);
+
+                    myStrArr.add(rssContent);
                     Log.i(RSS, "Item title: " + (title == null ? "N/A" : title));
                     Log.d("Hello", "It is in loop");
                 }

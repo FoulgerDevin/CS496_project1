@@ -1,6 +1,7 @@
 package cs496_projecy.rssnews;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,22 +9,29 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.einmalfel.earl.Item;
+import com.einmalfel.earl.RSSItem;
+
 import java.util.ArrayList;
 
 /**
  * Created by David on 4/29/2016.
  */
-public class MyAdapter extends ArrayAdapter<String> {
+public class MyAdapter extends ArrayAdapter<RSSItem> {
     int count = 0;
 
-    public MyAdapter(Context context, ArrayList<String> items) {
+    public MyAdapter(Context context, ArrayList<RSSItem> items) {
         super(context, 0, items);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the item we are trying to represent
-        String item = getItem(position);
+        RSSItem rssContent = getItem(position);
+        String aTitle = rssContent.getTitle();
+        String description = rssContent.getDescription();
+        Log.d("Article title", aTitle);
+        Log.d("Article description", description);
 
         // Check if we are recycling an existing view
         if(convertView == null) {
@@ -36,8 +44,8 @@ public class MyAdapter extends ArrayAdapter<String> {
         ImageView image = (ImageView)convertView.findViewById(R.id.image);
 
         // Now add our data into the view
-        title.setText(item);
-        summary.setText("Description");
+        title.setText(aTitle);
+        summary.setText(description);
         image.setImageResource(R.mipmap.ic_launcher);
 
         // Finish
