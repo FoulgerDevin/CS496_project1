@@ -13,6 +13,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import com.einmalfel.earl.RSSItem;
@@ -94,21 +95,25 @@ public class MainFeed extends AppCompatActivity {
 
     private void saveSources() {
         // Save the RSS source list to a file
-        new Thread( new Runnable() {
-            public void run() {
+//        new Thread( new Runnable() {
+//            public void run() {
                 try {
-                    FileWriter writer = new FileWriter(getString(R.string.filename));
+                    Log.i("FILEDIR", MainFeed.this.getFilesDir().toString());
+                    File file = new File(MainFeed.this.getFilesDir(), getString(R.string.filename));
+                    FileWriter writer = new FileWriter(file);
                     for (String str : mySourceList) {
-                        writer.write(str);
+                        writer.write(str + '\n');
                     }
-                    writer.write("http://rss.cnn.com/rss/cnn_topstories.rss");
+//                    writer.write("test source 1\n");
+//                    writer.write("test source 2\n");
+//                    writer.write("test source 3\n");
 
                     writer.close();
                 }
                 catch (Exception e) {
                     Log.i("FILESAVE", "Failed to write to file: " + e.getMessage());
                 }
-            }
-        }).start();
+//            }
+//        }).start();
     }
 }

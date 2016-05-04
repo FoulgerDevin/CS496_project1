@@ -30,9 +30,6 @@ public class MainService extends Service {
     /** Create custom binder for onBind() */
     private final IBinder mBinder = new LocalBinder();
 
-    /** File to load RSS sources from */
-    String filename = "stored_rss.txt";
-
     /** List of RSS sources loaded from storage file */
     ArrayList<String> sourceList = new ArrayList<String>();
 
@@ -73,33 +70,31 @@ public class MainService extends Service {
      */
     public ArrayList<String> loadRSS() {
         // Open and read the file, line by line
-        new Thread( new Runnable() {
-            public void run() {
-                try {
-                    InputStream in = new FileInputStream(getString(R.string.filename));
-                    if (in != null) {
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                        String line;
+        try {
+            File file = new File(MainService.this.getFilesDir(), getString(R.string.filename));
+            InputStream in = new FileInputStream(file);
+            if (in != null) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                String line;
 
-                        // read the file line-by-line, adding each source to the sourceList
-                        do {
-                            line = reader.readLine();
+                // read the file line-by-line, adding each source to the sourceList
+                do {
+                    line = reader.readLine();
 
-                            if (!sourceList.contains(line)) {
-                                sourceList.add(line);
-                            }
-
-                            Log.i("FILEREAD", "Read line: " + line);
-                        }
-                        while (line != null);
+                    if (!sourceList.contains(line) && (line != null)) {
+                        sourceList.add(line);
                     }
-                } catch (Exception e) {
-                    Log.i("FILELOAD", "Failed to laod file: " + e.getMessage());
-                    Log.i("FILELOAD", "Stack Trace: " + e.getStackTrace());
+
+                    Log.i("FILEREAD", "Read line: " + line);
                 }
-                Log.i("FILELOAD", "Successfully opened file.");
+                while (line != null);
             }
-        }).start();
+        } catch (Exception e) {
+            Log.i("FILELOAD", "Failed to laod file: " + e.getMessage());
+            Log.i("FILELOAD", "Stack Trace: " + e.getStackTrace());
+        }
+
+
         return sourceList;
     }
 
