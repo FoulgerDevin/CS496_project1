@@ -1,6 +1,7 @@
 package cs496_projecy.rssnews;
 
 import android.os.AsyncTask;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,13 +10,18 @@ import android.widget.ListView;
 import com.einmalfel.earl.EarlParser;
 import com.einmalfel.earl.Feed;
 import com.einmalfel.earl.Item;
+import com.einmalfel.earl.RSSCategory;
+import com.einmalfel.earl.RSSEnclosure;
+import com.einmalfel.earl.RSSItem;
 
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class MainFeed extends AppCompatActivity {
-    ArrayList<String> myStrArr;
+    ArrayList<RSSItem> myStrArr;
     ListView mList;
     MyAdapter mAdapter;
     String link = ("http://rss.nytimes.com/services/xml/rss/nyt/World.xml");
@@ -27,41 +33,57 @@ public class MainFeed extends AppCompatActivity {
 
         mList = (ListView)findViewById(R.id.mainList);
 
-        myStrArr = new ArrayList<String>();
-
-        // test
-
-        //myStrArr.add("String 1");
-        //myStrArr.add("String 2");
-        //myStrArr.add("String 3");
+        myStrArr = new ArrayList<RSSItem>();
 
         new RetrieveFeedTask().execute();
 
         // Create an adapter and attach it to the list
         mAdapter = new MyAdapter(this, myStrArr);
         mList.setAdapter(mAdapter);
-
     }
 
-    class RetrieveFeedTask extends AsyncTask<Void, Void, ArrayList<String>> {
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    class RetrieveFeedTask extends AsyncTask<Void, Void, ArrayList<RSSItem>> {
 
         String RSS;
 
         @Override
-        protected ArrayList<String> doInBackground(Void... params) {
+        protected ArrayList<RSSItem> doInBackground(Void... params) {
 
             InputStream inputStream = null;
 
-            //ArrayList<String> myStrArr = new ArrayList<String>();
             try {
                 inputStream = new URL(link).openConnection().getInputStream();
                 Feed feed = EarlParser.parseOrThrow(inputStream, 0);
                 Log.i(RSS, "Processing feed: " + feed.getTitle());
                 for (Item item : feed.getItems()) {
                     String title = item.getTitle();
-                    myStrArr.add(title);
-                    Log.i(RSS, "Item title: " + (title == null ? "N/A" : title));
-                    Log.d("Hello", "It is in loop");
+                    String description = item.getDescription();
+                    String author = item.getAuthor();
+                    URL link = new URL(item.getLink());
+                    Date pubDate = item.getPublicationDate();
+
+                    /*
+                     * Unfortunately, these lists are REQUIRED to create an RSSItem
+                     */
+                    List<RSSCategory> categories = new ArrayList<RSSCategory>();
+                    RSSCategory category = new RSSCategory("String", "String");
+                    categories.add(category);
+
+                    List<RSSEnclosure> enclosures = new ArrayList<RSSEnclosure>();
+                    RSSEnclosure enclosure = new RSSEnclosure(link, 2, "String");
+                    enclosures.add(enclosure);
+
+                    RSSItem rssContent = new RSSItem(title, link, description, author, categories,
+                            null, enclosures, null, pubDate, null, null, null);
+
+                    myStrArr.add(rssContent);
+                    //Log.i(RSS, "Item title: " + (title == null ? "N/A" : title));
+                    //Log.d("Hello", "It is in loop");
                 }
 
                 return myStrArr;
