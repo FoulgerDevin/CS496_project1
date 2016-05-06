@@ -3,8 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="8dp"
-    android:paddingRight="8dp"
     tools:context="cs496_projecy.rssnews.MainFeed">
 
     <ListView
@@ -14,6 +12,6 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:background="@drawable/background"
+        android:background="#E0E0E0"
     />
 </RelativeLayout>
