@@ -1,10 +1,14 @@
 package cs496_projecy.rssnews;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.einmalfel.earl.EarlParser;
@@ -45,6 +49,31 @@ public class MainFeed extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+    }
+//This method populates the Options menu within the main activity
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+// This Method will create the MyUserPreferences Activity
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch(item.getItemId())
+        {
+            case R.id.preferences:
+            {
+                Intent intent = new Intent(this, MyUserPreferences.class);
+                //intent.setClassName(this, ".MyUserPreferences");
+                startActivity(intent);
+                return true;
+            }
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     class RetrieveFeedTask extends AsyncTask<Void, Void, ArrayList<RSSItem>> {
