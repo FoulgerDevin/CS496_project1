@@ -34,6 +34,7 @@ public class MyAdapter extends ArrayAdapter<RSSItem> {
         RSSItem rssContent = getItem(position);
         String aTitle = rssContent.getTitle();
         String description = rssContent.getDescription();
+        String date = rssContent.getPublicationDate().toString();
         final String link = rssContent.getLink();
         Log.d("LINK: ", link);
 
@@ -45,10 +46,12 @@ public class MyAdapter extends ArrayAdapter<RSSItem> {
         // Now get the data fields for the list_item view:
         TextView title = (TextView)convertView.findViewById(R.id.title);
         TextView summary = (TextView)convertView.findViewById(R.id.summary);
+        TextView adate = (TextView)convertView.findViewById(R.id.date);
 
         // Now add our data into the view
         title.setText(aTitle);
         summary.setText(description);
+        adate.setText(date);
 
         convertView.setOnClickListener(new View.OnClickListener() {
 

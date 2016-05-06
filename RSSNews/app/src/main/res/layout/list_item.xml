@@ -20,10 +20,18 @@
         android:textStyle="bold"
     />
     <TextView
-        android:id="@+id/summary"
+        android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/title"
         android:paddingBottom="10dp"
-        />
+    />
+    <TextView
+        android:id="@+id/summary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/date"
+        android:paddingBottom="10dp"
+    />
+
 </RelativeLayout>

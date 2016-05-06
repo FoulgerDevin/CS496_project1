@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.AsyncTask;
 import android.os.IBinder;
-import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,11 +26,12 @@ import java.io.FileWriter;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
 public class MainFeed extends AppCompatActivity {
-    ArrayList<RSSItem> myStrArr;
+    ArrayList<RSSItem> myItemArray;
     ListView mList;
     MyAdapter mAdapter;
     String link = ("http://rss.nytimes.com/services/xml/rss/nyt/World.xml");
@@ -56,6 +56,7 @@ public class MainFeed extends AppCompatActivity {
             mySourceList = mService.loadRSS();
             for (String str : mySourceList)
                 Log.wtf("ASD", str);
+            new RetrieveFeedTask().execute();
         }
 
         @Override
@@ -71,13 +72,13 @@ public class MainFeed extends AppCompatActivity {
 
         mList = (ListView)findViewById(R.id.mainList);
 
-        myStrArr = new ArrayList<RSSItem>();
-
-        new RetrieveFeedTask().execute();
+        myItemArray = new ArrayList<RSSItem>();
 
         // Create an adapter and attach it to the list
-        mAdapter = new MyAdapter(this, myStrArr);
+        mAdapter = new MyAdapter(this, myItemArray);
         mList.setAdapter(mAdapter);
+
+
 
         // Start the MainService
         Intent intent = new Intent(this, MainFeed.class);
@@ -146,7 +147,7 @@ public class MainFeed extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    class RetrieveFeedTask extends AsyncTask<Void, Void, ArrayList<RSSItem>> {
+    class RetrieveFeedTask extends AsyncTask<Void, RSSItem, ArrayList<RSSItem>> {
 
         String RSS;
 
@@ -154,42 +155,59 @@ public class MainFeed extends AppCompatActivity {
         protected ArrayList<RSSItem> doInBackground(Void... params) {
 
             InputStream inputStream = null;
-
-            try {
-                inputStream = new URL(link).openConnection().getInputStream();
-                Feed feed = EarlParser.parseOrThrow(inputStream, 0);
-                Log.i(RSS, "Processing feed: " + feed.getTitle());
-                for (Item item : feed.getItems()) {
-                    String title = item.getTitle();
-                    String description = item.getDescription();
-                    String author = item.getAuthor();
-                    URL link = new URL(item.getLink());
-                    Date pubDate = item.getPublicationDate();
+            for (String url : mySourceList) {
+                if (url == null)
+                    continue;
+                try {
+                    inputStream = new URL(url).openConnection().getInputStream();
+                    Feed feed = EarlParser.parseOrThrow(inputStream, 0);
+                    Log.i(RSS, "Processing feed: " + feed.getTitle());
+                    for (Item item : feed.getItems()) {
+                        String title = item.getTitle();
+                        String description = item.getDescription();
+                        String author = item.getAuthor();
+                        URL articleLink = new URL(item.getLink());
+                        Date pubDate = item.getPublicationDate();
 
                     /*
                      * Unfortunately, these lists are REQUIRED to create an RSSItem
                      */
-                    List<RSSCategory> categories = new ArrayList<RSSCategory>();
-                    RSSCategory category = new RSSCategory("String", "String");
-                    categories.add(category);
+                        List<RSSCategory> categories = new ArrayList<RSSCategory>();
+                        RSSCategory category = new RSSCategory("String", "String");
+                        categories.add(category);
 
-                    List<RSSEnclosure> enclosures = new ArrayList<RSSEnclosure>();
-                    RSSEnclosure enclosure = new RSSEnclosure(link, 2, "String");
-                    enclosures.add(enclosure);
+                        List<RSSEnclosure> enclosures = new ArrayList<RSSEnclosure>();
+                        RSSEnclosure enclosure = new RSSEnclosure(articleLink, 2, "String");
+                        enclosures.add(enclosure);
 
-                    RSSItem rssContent = new RSSItem(title, link, description, author, categories,
-                            null, enclosures, null, pubDate, null, null, null);
+                        RSSItem rssContent = new RSSItem(title, articleLink, description, author, categories,
+                                null, enclosures, null, pubDate, null, null, null);
 
-                    myStrArr.add(rssContent);
-                    //Log.i(RSS, "Item title: " + (title == null ? "N/A" : title));
-                    //Log.d("Hello", "It is in loop");
+
+                        publishProgress(rssContent);
+                        //Log.i(RSS, "Item title: " + (title == null ? "N/A" : title));
+                        //Log.d("Hello", "It is in loop");
+                    }
+
+                } catch (Exception e) {
+                    Log.wtf("PARSE", "Failed to parse " + e.getMessage());
+                    e.printStackTrace();
+                    return null;
                 }
-
-                return myStrArr;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
             }
+            return myItemArray;
+        }
+
+        @Override
+        protected void onProgressUpdate(RSSItem... progressItem) {
+            Log.d("UPDATE", "Added RSSItem to feed");
+            myItemArray.add(progressItem[0]);
+        }
+
+        @Override
+        protected void onPostExecute (ArrayList<RSSItem> items) {
+            mAdapter.sort(itemComparator);
+            mAdapter.notifyDataSetChanged();
         }
     }
 
@@ -205,9 +223,9 @@ public class MainFeed extends AppCompatActivity {
             for (String str : mySourceList) {
                 writer.write(str + '\n');
             }
-//            writer.write("test source 1\n");
-//            writer.write("test source 2\n");
-//            writer.write("test source 3\n");
+            writer.write("http://www.feedforall.com/sample.xml\n");
+            writer.write("http://www.feedforall.com/sample-feed.xml\n");
+            writer.write("http://rss.nytimes.com/services/xml/rss/nyt/World.xml\n");
 
             writer.close();
         }
@@ -215,6 +233,26 @@ public class MainFeed extends AppCompatActivity {
             Log.i("FILESAVE", "Failed to write to file: " + e.getMessage());
         }
     }
+
+    public static Comparator<RSSItem> itemComparator
+            = new Comparator<RSSItem>() {
+        public int compare(RSSItem item1, RSSItem item2) {
+            try {
+//                Log.i("COMPARE", Long.toString(item2.getPublicationDate().getTime() - item1.getPublicationDate().getTime()));
+//                Log.i("COMPARE", "\titem1: " + item1.getTitle());
+//                Log.i("COMPARE", "\titem2: " + item2.getTitle());
+                if(item2.getPublicationDate().getTime() < item1.getPublicationDate().getTime())
+                    return -1;
+                else if (item2.getPublicationDate().getTime() == item1.getPublicationDate().getTime())
+                    return 0;
+                return 1;
+            }
+            catch (Exception e) {
+                Log.wtf("ASD", "FAIL");
+            }
+            return 0;
+        }
+    };
 }
 
 
