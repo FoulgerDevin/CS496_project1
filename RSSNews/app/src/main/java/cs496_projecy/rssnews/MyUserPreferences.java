@@ -1,5 +1,6 @@
 package cs496_projecy.rssnews;
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,7 +21,11 @@ import com.einmalfel.earl.RSSItem;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,12 +34,12 @@ import java.util.List;
  */
 public class MyUserPreferences extends PreferenceActivity implements View.OnClickListener {
 
-
+    static MyUserPreferences obj;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        obj = this;
         // Add a button to the header list.
         if (hasHeaders()) {
             Button button = new Button(this);
@@ -46,10 +51,9 @@ public class MyUserPreferences extends PreferenceActivity implements View.OnClic
 
     }
 
-
     @Override
     public void onClick (View v){
-            startActivity(new Intent(this, MainFeed.class));
+        this.finish();
     }
 
     @Override
@@ -99,40 +103,36 @@ public class MyUserPreferences extends PreferenceActivity implements View.OnClic
         private List<RSSItem> rssItemList = new ArrayList<>();
 
         @Override
-        public void onCreate(Bundle savedInstanceState){
+        public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-        // Can retrieve arguments from headers XML.
-            Log.i("args","Arguments: "+ getArguments());
+            // Can retrieve arguments from headers XML.
+            Log.i("args", "Arguments: " + getArguments());
 
-        // Load the preferences from an XML resource
+            // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.fragmented_preferences_inner);
 
         }
+
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            return inflater.inflate(R.layout.feed_list, null);
+            View rootView = inflater.inflate(R.layout.feed_list, container, false);
+            Button btnOk = (Button) (rootView.findViewById(R.id.btnOK));
+            btnOk.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    validateSaveExit(obj);
+                }
+            });
+            return rootView;
         }
 
         private void addRSSLink() {
             SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
         }
-/*
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-
-
-            Button btnOk = (Button) (this.findViewById(R.id.btnOK));
-            btnOk.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    validateSaveExit();
-                }
-            });
-        }
 
         private String checkNonEmpty(int id, String info) {
-            TextView textView = (TextView) (findViewById(id));
+            TextView textView = (TextView) (getActivity().findViewById(id));
             if (textView != null) {
                 CharSequence txt = textView.getText();
                 if (txt != null) {
@@ -146,29 +146,33 @@ public class MyUserPreferences extends PreferenceActivity implements View.OnClic
             return null;
         }
 
-        private void validateSaveExit() {
-            String author = checkNonEmpty(R.id.txtRSSLink, "author");
-            String title = checkNonEmpty(R.id.txtTitle, "title");
-            if (author != null && title != null) {
-                // return result
+        protected void validateSaveExit(MyUserPreferences obj) {
+            String link = checkNonEmpty(R.id.txtRSSLink, "Proper Address");
+            if (link != null) {
+                try {
+                    //mySourceList.add(link);
+                    Log.i("FILEDIRP", obj.getFilesDir().toString());
+                    File file = new File(obj.getFilesDir(), getString(R.string.filename));
+                    FileOutputStream out = new FileOutputStream(file);
+                    OutputStreamWriter outWriter = new OutputStreamWriter(out);
+                    outWriter.write(link + "\n");
+                    outWriter.flush();
+                    outWriter.close();
+                    out.close();
+
+                } catch (Exception e) {
+                    Toast.makeText(obj.getBaseContext(),
+                            "Saving Link Failed",
+                            Toast.LENGTH_SHORT).show();
+                }
 
             }
-*/
-    }
-/*
-    private class MyTask extends AsyncTask<String, Float, ArrayList<RSSItem>> {
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.popBackStackImmediate();
+            getActivity().finish();
 
-        @Override
-        protected ArrayList<RSSItem> doInBackground(String... params) {
-            try {
-                File file = new File(this.getFilesDir(), getString(R.string.filename));
-                InputStream in = new FileInputStream(file);
-            } catch (Exception e) {
-
-            }
-            return null;
         }
+
     }
-*/
 
 }

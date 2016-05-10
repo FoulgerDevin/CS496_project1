@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">RSSNews</string>
     <string name="filename">stored_rss.txt</string>
-    <string name="title_edittext_preference">Add RSS Feed</string>
-    <string name="summary_edittext_preference">Provide a link to a new RSS Feed.</string>
-    <string name="dialog_title_edittext_preference">RSS Feed Link</string>
+    <string name="title_editlist_preference">Change Theme</string>
+    <string name="summary_editlist_preference">Cahnge Colors in the App</string>
+    <string name="dialog_title_editlist_preference">Choose Color</string>
 </resources>

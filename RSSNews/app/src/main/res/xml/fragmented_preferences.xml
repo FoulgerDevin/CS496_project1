@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="Manage Feeds"
+    <PreferenceCategory android:title="Appearance"
         android:key="myPreferencesTitle">
         <CheckBoxPreference
             android:key="checkBoxPref"
             android:title="check it out"
             android:summary="click this little box"/>
 
-        <EditTextPreference
+        <ListPreference
             android:key="link_add"
-            android:title="@string/title_edittext_preference"
-            android:summary="@string/summary_edittext_preference"
-            android:dialogTitle="@string/dialog_title_edittext_preference" />
+            android:title="@string/title_editlist_preference"
+            android:summary="@string/summary_editlist_preference"
+            android:dialogTitle="@string/dialog_title_editlist_preference" />
     </PreferenceCategory>
 </PreferenceScreen>

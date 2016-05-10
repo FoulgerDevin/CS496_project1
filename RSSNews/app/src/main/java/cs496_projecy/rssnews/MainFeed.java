@@ -142,6 +142,13 @@ public class MainFeed extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             }
+            case R.id.refresh:
+            {
+                Intent intent = getIntent();
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                finish();
+                startActivity(intent);
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -223,10 +230,7 @@ public class MainFeed extends AppCompatActivity {
             for (String str : mySourceList) {
                 writer.write(str + '\n');
             }
-            writer.write("http://www.feedforall.com/sample.xml\n");
-            writer.write("http://www.feedforall.com/sample-feed.xml\n");
             writer.write("http://rss.nytimes.com/services/xml/rss/nyt/World.xml\n");
-
             writer.close();
         }
         catch (Exception e) {
