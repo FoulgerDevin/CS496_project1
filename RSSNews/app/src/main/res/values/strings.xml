@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">RSSNews</string>
     <string name="filename">stored_rss.txt</string>
+    <string name="title_editlist_preference">Change Theme</string>
+    <string name="summary_editlist_preference">Cahnge Colors in the App</string>
+    <string name="dialog_title_editlist_preference">Choose Color</string>
 </resources>

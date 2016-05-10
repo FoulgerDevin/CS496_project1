@@ -2,18 +2,12 @@
 <preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
     <header android:fragment="cs496_projecy.rssnews.MyUserPreferences$Prefs1Fragment"
         android:icon="@mipmap/ic_settings_applications"
-        android:title="RSS Feeds"
-        android:summary="Manage your feeds" />
-
+        android:title="General Settings"
+        android:summary="Manage appearance and other settings." />
     <header android:fragment="cs496_projecy.rssnews.MyUserPreferences$Prefs2Fragment"
-        android:icon="@mipmap/ic_settings_display"
-        android:title="Prefs 2"
-        android:summary="Some other preferences you can see.">
-        <!-- Arbitrary key/value pairs can be included with a header as
-             arguments to its fragment. -->
-        <extra android:name="someKey" android:value="someHeaderValue" />
-    </header>
-
+        android:icon="@mipmap/ic_settings_applications"
+        android:title="New RSS Feed"
+        android:summary="Add a new feed." />
     <header android:icon="@mipmap/ic_settings_display"
         android:title="Visit our Website"
         android:summary="Will redirect to our website. -currently Google-">

@@ -13,7 +13,6 @@ import com.einmalfel.earl.Feed;
 import com.einmalfel.earl.Item;
 import com.einmalfel.earl.RSSItem;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -71,7 +70,7 @@ public class MainService extends Service {
     public ArrayList<String> loadRSS() {
         // Open and read the file, line by line
         try {
-            File file = new File(MainService.this.getFilesDir(), getString(R.string.filename));
+            File file = new File(this.getFilesDir(), getString(R.string.filename));
             InputStream in = new FileInputStream(file);
             if (in != null) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(in));
@@ -90,7 +89,7 @@ public class MainService extends Service {
                 while (line != null);
             }
         } catch (Exception e) {
-            Log.i("FILELOAD", "Failed to laod file: " + e.getMessage());
+            Log.i("FILELOAD", "Failed to load file: " + e.getMessage());
             Log.i("FILELOAD", "Stack Trace: " + e.getStackTrace());
         }
 

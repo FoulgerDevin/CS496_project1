@@ -22,8 +22,12 @@ import com.einmalfel.earl.RSSEnclosure;
 import com.einmalfel.earl.RSSItem;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -142,6 +146,13 @@ public class MainFeed extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             }
+            case R.id.refresh:
+            {
+                Intent intent = getIntent();
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                finish();
+                startActivity(intent);
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -192,7 +203,6 @@ public class MainFeed extends AppCompatActivity {
                 } catch (Exception e) {
                     Log.wtf("PARSE", "Failed to parse " + e.getMessage());
                     e.printStackTrace();
-                    return null;
                 }
             }
             return myItemArray;
@@ -219,14 +229,12 @@ public class MainFeed extends AppCompatActivity {
         try {
             Log.i("FILEDIR", MainFeed.this.getFilesDir().toString());
             File file = new File(MainFeed.this.getFilesDir(), getString(R.string.filename));
-            FileWriter writer = new FileWriter(file);
+            FileOutputStream out = new FileOutputStream(file);
+            OutputStreamWriter writer = new OutputStreamWriter(out);
             for (String str : mySourceList) {
                 writer.write(str + '\n');
             }
-            writer.write("http://www.feedforall.com/sample.xml\n");
-            writer.write("http://www.feedforall.com/sample-feed.xml\n");
             writer.write("http://rss.nytimes.com/services/xml/rss/nyt/World.xml\n");
-
             writer.close();
         }
         catch (Exception e) {
