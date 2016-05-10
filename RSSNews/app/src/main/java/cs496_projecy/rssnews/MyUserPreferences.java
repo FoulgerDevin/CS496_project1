@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +51,7 @@ public class MyUserPreferences extends PreferenceActivity implements View.OnClic
         }
 
     }
+
 
     @Override
     public void onClick (View v){
@@ -126,20 +128,20 @@ public class MyUserPreferences extends PreferenceActivity implements View.OnClic
             return rootView;
         }
 
-        private void addRSSLink() {
-            SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
-        }
-
         private String checkNonEmpty(int id, String info) {
             TextView textView = (TextView) (getActivity().findViewById(id));
             if (textView != null) {
                 CharSequence txt = textView.getText();
-                if (txt != null) {
-                    int len = txt.length();
-                    if (len > 0) {
-                        return txt.toString();
+                try {
+                    if (new URL(txt.toString()).toURI().equals(null)) {
+
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                int len = txt.length();
+                if (len > 0) {
+                    return txt.toString();
                 }
                 textView.setHint(info + " is required");
             }
@@ -150,25 +152,18 @@ public class MyUserPreferences extends PreferenceActivity implements View.OnClic
             String link = checkNonEmpty(R.id.txtRSSLink, "Proper Address");
             if (link != null) {
                 try {
-                    //mySourceList.add(link);
-                    Log.i("FILEDIRP", obj.getFilesDir().toString());
                     File file = new File(obj.getFilesDir(), getString(R.string.filename));
                     FileOutputStream out = new FileOutputStream(file);
                     OutputStreamWriter outWriter = new OutputStreamWriter(out);
                     outWriter.write(link + "\n");
-                    outWriter.flush();
                     outWriter.close();
                     out.close();
-
                 } catch (Exception e) {
                     Toast.makeText(obj.getBaseContext(),
                             "Saving Link Failed",
                             Toast.LENGTH_SHORT).show();
                 }
-
             }
-            FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.popBackStackImmediate();
             getActivity().finish();
 
         }
