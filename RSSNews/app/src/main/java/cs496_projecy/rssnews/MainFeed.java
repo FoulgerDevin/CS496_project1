@@ -148,7 +148,10 @@ public class MainFeed extends AppCompatActivity {
             }
             case R.id.refresh:
             {
-                this.recreate();
+                Intent intent = getIntent();
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                finish();
+                startActivity(intent);
             }
         }
 

@@ -132,16 +132,11 @@ public class MyUserPreferences extends PreferenceActivity implements View.OnClic
             TextView textView = (TextView) (getActivity().findViewById(id));
             if (textView != null) {
                 CharSequence txt = textView.getText();
-                try {
-                    if (new URL(txt.toString()).toURI().equals(null)) {
-
+                if (txt != null) {
+                    int len = txt.length();
+                    if (len > 0) {
+                        return txt.toString();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                int len = txt.length();
-                if (len > 0) {
-                    return txt.toString();
                 }
                 textView.setHint(info + " is required");
             }
@@ -164,6 +159,7 @@ public class MyUserPreferences extends PreferenceActivity implements View.OnClic
                             Toast.LENGTH_SHORT).show();
                 }
             }
+            getActivity().getFragmentManager().beginTransaction().remove(this).commit();
             getActivity().finish();
 
         }
