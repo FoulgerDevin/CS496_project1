@@ -1,7 +1,9 @@
 <resources>
     <string name="app_name">RSSNews</string>
+    <string name="server_client_id">947996600240-c1k00dha0omklk16oa84q2u7bovj0t7i.apps.googleusercontent.com</string>
     <string name="filename">stored_rss.txt</string>
     <string name="title_editlist_preference">Change Theme</string>
     <string name="summary_editlist_preference">Cahnge Colors in the App</string>
     <string name="dialog_title_editlist_preference">Choose Color</string>
+
 </resources>

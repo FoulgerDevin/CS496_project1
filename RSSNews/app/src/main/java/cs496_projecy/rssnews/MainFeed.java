@@ -5,9 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.AsyncTask;
-import android.os.IBinder;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,13 +21,16 @@ import com.einmalfel.earl.Item;
 import com.einmalfel.earl.RSSCategory;
 import com.einmalfel.earl.RSSEnclosure;
 import com.einmalfel.earl.RSSItem;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.OptionalPendingResult;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.util.ArrayList;
@@ -34,17 +38,15 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-public class MainFeed extends AppCompatActivity {
-    ArrayList<RSSItem> myItemArray;
-    ListView mList;
-    MyAdapter mAdapter;
-    String link = ("http://rss.nytimes.com/services/xml/rss/nyt/World.xml");
+public class MainFeed extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
-    /** List of RSS source URLs */
-    ArrayList<String> mySourceList;
-    /** Reference to main service, to access public methods */
-    MainService mService;
-    boolean mBound = false;
+    private GoogleApiClient mGoogleApiClient;
+    private ArrayList<RSSItem> myItemArray;
+    private ArrayList<String> mySourceList; /** List of RSS source URLs */
+    private ListView mList;
+    private MyAdapter mAdapter;
+    private MainService mService; /** Reference to main service, to access public methods */
+    private boolean mBound = false;
 
     /** Defines callbacks for service binding, passed to bindService() */
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -82,6 +84,16 @@ public class MainFeed extends AppCompatActivity {
         mAdapter = new MyAdapter(this, myItemArray);
         mList.setAdapter(mAdapter);
 
+        final GoogleSignInOptions gso = new GoogleSignInOptions
+                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        mGoogleApiClient = new GoogleApiClient
+                .Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
 
 
         // Start the MainService
@@ -98,6 +110,7 @@ public class MainFeed extends AppCompatActivity {
             Intent intent = new Intent(this, MainService.class);
             bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         }
+
     }
 
     /** When stopping, save all sources in case we die. */
@@ -142,7 +155,6 @@ public class MainFeed extends AppCompatActivity {
             case R.id.preferences:
             {
                 Intent intent = new Intent(this, MyUserPreferences.class);
-                //intent.setClassName(this, ".MyUserPreferences");
                 startActivity(intent);
                 return true;
             }
@@ -156,6 +168,11 @@ public class MainFeed extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 
     class RetrieveFeedTask extends AsyncTask<Void, RSSItem, ArrayList<RSSItem>> {

@@ -10,6 +10,8 @@
         <ListPreference
             android:key="link_add"
             android:title="@string/title_editlist_preference"
+            android:entries="@array/Themes"
+            android:entryValues="@array/ThemesData"
             android:summary="@string/summary_editlist_preference"
             android:dialogTitle="@string/dialog_title_editlist_preference" />
     </PreferenceCategory>
