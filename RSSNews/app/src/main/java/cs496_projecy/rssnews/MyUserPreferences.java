@@ -131,12 +131,9 @@ public class MyUserPreferences extends PreferenceActivity implements View.OnClic
         private String checkNonEmpty(int id, String info) {
             TextView textView = (TextView) (getActivity().findViewById(id));
             if (textView != null) {
-                CharSequence txt = textView.getText();
+                String txt = Utils.checkURL(textView.getText().toString());
                 if (txt != null) {
-                    int len = txt.length();
-                    if (len > 0) {
-                        return txt.toString();
-                    }
+                    return txt;
                 }
                 textView.setHint(info + " is required");
             }

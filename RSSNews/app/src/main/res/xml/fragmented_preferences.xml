@@ -6,7 +6,7 @@
             android:key="checkBoxPref"
             android:title="check it out"
             android:summary="click this little box"/>
-
+<!--
         <ListPreference
             android:key="link_add"
             android:title="@string/title_editlist_preference"
@@ -14,5 +14,6 @@
             android:entryValues="@array/ThemesData"
             android:summary="@string/summary_editlist_preference"
             android:dialogTitle="@string/dialog_title_editlist_preference" />
+            -->
     </PreferenceCategory>
 </PreferenceScreen>

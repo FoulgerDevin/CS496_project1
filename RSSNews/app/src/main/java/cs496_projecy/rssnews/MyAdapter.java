@@ -3,6 +3,7 @@ package cs496_projecy.rssnews;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,5 +65,14 @@ public class MyAdapter extends ArrayAdapter<RSSItem> {
         });
         // Finish
         return convertView;
+    }
+
+    private String getDate(RSSItem rssContent) {
+        String date = rssContent.getPublicationDate().toString();
+        if(date.isEmpty()) {
+            return "";
+        } else {
+            return date;
+        }
     }
 }
