@@ -124,30 +124,10 @@ public class MainFeed extends AppCompatActivity implements GoogleApiClient.OnCon
         SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
         signInButton.setScopes(gso.getScopeArray());
-        signInButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                switch (v.getId()) {
-                    case R.id.sign_in_button:
-                        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-                        startActivityForResult(signInIntent, RC_SIGN_IN);
-                        break;
-                    case R.id.sign_out_button:
-                        signOut();
-                        break;
-                    case R.id.disconnect_button:
-                        revokeAccess();
-                        break;
-                }
-            }
-        });
-
-
 
         // Start the MainService
-        Intent intent = new Intent(this, MainFeed.class);
-        startService(intent);
+        //Intent intent = new Intent(this, MainFeed.class);
+        //startService(intent);
     }
 
     /** Bind to service if we are unbound. */
@@ -159,6 +139,7 @@ public class MainFeed extends AppCompatActivity implements GoogleApiClient.OnCon
             Intent intent = new Intent(this, MainService.class);
             bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         }
+
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
         if (opr.isDone()) {
             // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
@@ -303,6 +284,10 @@ public class MainFeed extends AppCompatActivity implements GoogleApiClient.OnCon
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
+            // Start the MainService
+            Intent intent = new Intent(this, MainFeed.class);
+            startService(intent);
+            //This is where we can store into variables we can pass out to service
             GoogleSignInAccount acct = result.getSignInAccount();
             String userName = acct.getDisplayName();
             String userEmail = acct.getEmail();
@@ -319,18 +304,31 @@ public class MainFeed extends AppCompatActivity implements GoogleApiClient.OnCon
     private void updateUI(boolean signedIn) {
         if (signedIn) {
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
+            findViewById(R.id.status).setVisibility(View.GONE);
             findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
         } else {
             //mStatusTextView.setText("Signed Out");
-
+            showMsg("Signed Out");
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
+            findViewById(R.id.status).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
         }
     }
 
     @Override
     public void onClick(View v) {
-
+        switch (v.getId()) {
+            case R.id.sign_in_button:
+                Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+                startActivityForResult(signInIntent, RC_SIGN_IN);
+                break;
+            case R.id.sign_out_button:
+                signOut();
+                break;
+            case R.id.disconnect_button:
+                revokeAccess();
+                break;
+        }
     }
 
     class RetrieveFeedTask extends AsyncTask<Void, RSSItem, ArrayList<RSSItem>> {
