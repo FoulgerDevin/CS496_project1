@@ -95,7 +95,6 @@ public class MainFeed extends AppCompatActivity implements GoogleApiClient.OnCon
         setContentView(R.layout.activity_main_feed);
 
         // Views
-        //mStatusTextView = (TextView) findViewById(R.id.status);
 
         // Button listeners
         findViewById(R.id.sign_in_button).setOnClickListener(this);
@@ -124,10 +123,6 @@ public class MainFeed extends AppCompatActivity implements GoogleApiClient.OnCon
         SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
         signInButton.setScopes(gso.getScopeArray());
-
-        // Start the MainService
-        //Intent intent = new Intent(this, MainFeed.class);
-        //startService(intent);
     }
 
     /** Bind to service if we are unbound. */
@@ -287,13 +282,14 @@ public class MainFeed extends AppCompatActivity implements GoogleApiClient.OnCon
             // Start the MainService
             Intent intent = new Intent(this, MainFeed.class);
             startService(intent);
+
             //This is where we can store into variables we can pass out to service
             GoogleSignInAccount acct = result.getSignInAccount();
             String userName = acct.getDisplayName();
             String userEmail = acct.getEmail();
             String userIDToken = acct.getIdToken();
             String userServerAuth = acct.getServerAuthCode();
-            //mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
+
             updateUI(true);
         } else {
             // Signed out, show unauthenticated UI.
@@ -307,7 +303,6 @@ public class MainFeed extends AppCompatActivity implements GoogleApiClient.OnCon
             findViewById(R.id.status).setVisibility(View.GONE);
             findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
         } else {
-            //mStatusTextView.setText("Signed Out");
             showMsg("Signed Out");
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
             findViewById(R.id.status).setVisibility(View.VISIBLE);
