@@ -10,6 +10,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -145,8 +146,11 @@ public class MyUserPreferences extends PreferenceActivity implements View.OnClic
 
         protected void validateSaveExit(MyUserPreferences obj) {
             String link = checkNonEmpty(R.id.txtRSSLink, "Proper Address");
+
             if (link != null) {
                 try {
+                    new EndpointsAsyncTask().execute(link);
+
                     File file = new File(obj.getFilesDir(), getString(R.string.filename));
                     FileOutputStream out = new FileOutputStream(file);
                     OutputStreamWriter outWriter = new OutputStreamWriter(out);

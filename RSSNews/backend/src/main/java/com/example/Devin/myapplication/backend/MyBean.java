@@ -3,13 +3,13 @@ package com.example.Devin.myapplication.backend;
 /** The object model for the data we are sending through endpoints */
 public class MyBean {
 
-    private String myData;
+    private String url;
 
     public String getData() {
-        return myData;
+        return url;
     }
 
     public void setData(String data) {
-        myData = data;
+        url = data;
     }
 }

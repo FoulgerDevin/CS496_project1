@@ -14,23 +14,22 @@ import java.io.IOException;
 /**
  * Created by Devin on 6/8/2016.
  */
-class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
+class EndpointsAsyncTask extends AsyncTask<String, Void, String> {
     private static MyApi myApiService = null;
-    private Context context;
+    //private Context context;
 
     @Override
-    protected String doInBackground(Pair<Context, String>... params) {
+    protected String doInBackground(String... params) {
         if(myApiService == null) {  // Only do this once
             MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
                     new AndroidJsonFactory(), null)
-                    .setRootUrl("https://endpoints-1336.appspot.com/_ah/api/");
+                    .setRootUrl("https://rssnews-1333.appspot.com/_ah/api/");
             // end options for devappserver
 
             myApiService = builder.build();
         }
 
-        context = params[0].first;
-        String name = params[0].second;
+        String name = params[0];
 
         try {
             return myApiService.sayHi(name).execute().getData();
@@ -41,7 +40,7 @@ class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> 
 
     @Override
     protected void onPostExecute(String result) {
-        Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+        //Toast.makeText(context, result, Toast.LENGTH_LONG).show();
     }
 }
 

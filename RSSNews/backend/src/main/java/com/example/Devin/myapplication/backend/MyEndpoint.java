@@ -34,8 +34,7 @@ public class MyEndpoint {
 
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
 
-        com.google.appengine.api.datastore.Entity e = new com.google.appengine.api.datastore.Entity("Data");
-        e.setProperty("User entered value", name);
+        com.google.appengine.api.datastore.Entity e = new com.google.appengine.api.datastore.Entity("link", name);
 
         response.setData(name);
 
