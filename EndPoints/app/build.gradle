@@ -4,12 +4,20 @@ android {
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
 
+    dexOptions {
+        incremental true
+        //javaMaxHeapSize=1024M for 32bit Java,2048M for 64bit Java
+        //javaMaxHeapSize "1024M"
+        javaMaxHeapSize "2048M"
+    }
+
     defaultConfig {
         applicationId "cs496_test.endpoints"
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
     buildTypes {
         release {
