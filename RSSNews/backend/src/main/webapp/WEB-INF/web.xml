@@ -13,6 +13,15 @@
         <url-pattern>/_ah/spi/*</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>RecommendFeed</servlet-name>
+        <servlet-class>com.example.Devin.myapplication.backend.RecommendFeed</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RecommendFeed</servlet-name>
+        <url-pattern>/cron/feed</url-pattern>
+    </servlet-mapping>
+
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>

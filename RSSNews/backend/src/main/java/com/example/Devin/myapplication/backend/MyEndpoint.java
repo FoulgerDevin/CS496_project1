@@ -13,7 +13,6 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 
 import javax.inject.Named;
-import javax.swing.text.html.parser.Entity;
 
 /** An endpoint class we are exposing */
 @Api(
@@ -34,8 +33,8 @@ public class MyEndpoint {
 
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
 
-        com.google.appengine.api.datastore.Entity e = new com.google.appengine.api.datastore.Entity("Data");
-        e.setProperty("User entered value", name);
+        com.google.appengine.api.datastore.Entity e = new com.google.appengine.api.datastore.Entity("link", name);
+        //e.setProperty("User entered value", name);
 
         response.setData(name);
 

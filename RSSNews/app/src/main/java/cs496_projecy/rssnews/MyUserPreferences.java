@@ -1,10 +1,7 @@
 package cs496_projecy.rssnews;
 
-import android.app.FragmentManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
@@ -20,13 +17,8 @@ import android.widget.Toast;
 import com.einmalfel.earl.RSSItem;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -146,6 +138,9 @@ public class MyUserPreferences extends PreferenceActivity implements View.OnClic
         protected void validateSaveExit(MyUserPreferences obj) {
             String link = checkNonEmpty(R.id.txtRSSLink, "Proper Address");
             if (link != null) {
+                EndpointsAsyncTask task = new EndpointsAsyncTask();
+
+                new EndpointsAsyncTask().execute(link);
                 try {
                     File file = new File(obj.getFilesDir(), getString(R.string.filename));
                     FileOutputStream out = new FileOutputStream(file);
