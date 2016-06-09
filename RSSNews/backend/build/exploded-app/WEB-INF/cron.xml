@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cronentries>
+    <cron>
+        <url>/cron/feed</url>
+        <description>Cron job for getting recommended feeds</description>
+        <schedule>every 24 hours</schedule>
+    </cron>
+</cronentries>
